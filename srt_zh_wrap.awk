@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_wrap.awk
-# Version: 1.1
+# Version: 1.2
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p)
 # License: MIT License
@@ -119,7 +119,8 @@ function starts_with_allowed_prefix(s,    fc,pre3) {
 # Return 1 if character is considered punctuation that cannot start a line.
 # 判断某字符是否属于“不可行首”的标点。
 function is_punct_char(c) {
-    return (index(".,?!;:'\"、，。！？；：…·()[]{}—–…", c) > 0)
+    return (index(".,?!;:'\"、，。！？；：…·)]}—–”’》〉", c) > 0)
+    # return (index(".,?!;:'\"、，。！？；：…·()[]{}—–“”‘’《》〈〉", c) > 0)
 }
 
 #############################
