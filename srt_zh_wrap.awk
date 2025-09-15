@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_wrap.awk
-# Version: 1.0
+# Version: 1.1
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p)
 # License: MIT License
@@ -32,7 +32,7 @@
 #   - 如果输入不是有效的 SRT 文件，脚本会报错并退出。
 #
 # Usage / 用法:
-#   awk -v SPLIT_THRESHOLD=20 -f srt_zh_wrap.awk input.srt > output.srt
+#   awk -v SPLIT_THRESHOLD=5 -f srt_zh_wrap.awk chs_only_example.srt > new1.srt
 #
 # Parameter / 参数:
 #   SPLIT_THRESHOLD : threshold for line splitting; if a line exceeds this length,
@@ -40,19 +40,22 @@
 #                     （换行阈值，默认为 20，可用 -v 覆盖，例如 -v SPLIT_THRESHOLD=15）
 # ============================================================================
 
-############################
+#############################
 #   Configuration / 配置
-############################
+#############################
 BEGIN {
-    SPLIT_THRESHOLD = 20    # default threshold / 默认换行阈值
+    # If SPLIT_THRESHOLD not set via -v, default to 20
+    # 如果没有通过 -v 设置 SPLIT_THRESHOLD，则默认为 20
+    if (SPLIT_THRESHOLD == "") SPLIT_THRESHOLD = 20
+
     useCRLF = 0            # 0 = LF, 1 = CRLF / 0 表示 LF，1 表示 CRLF
     validSRT = 0           # becomes 1 if valid cue detected / 检测到有效字幕块时为 1
     firstLine = 1          # flag for first line (to remove BOM) / 第一行标记（用于 BOM 去除）
 }
 
-############################
+#############################
 #   Utility Functions / 工具函数
-############################
+#############################
 
 # Detect whether line is a valid SRT timecode.
 # Format is relaxed: allows flexible spacing.
@@ -119,15 +122,15 @@ function is_punct_char(c) {
     return (index(".,?!;:'\"、，。！？；：…·()[]{}—–…", c) > 0)
 }
 
-############################
+#############################
 #   Hyphen Detection / "-" 标记检测
-############################
+#############################
 
 # Find valid positions of '-' used as dialogue markers.
 # Rules:
 #   - If '-' is at position 1, always valid.
 #   - If '-' appears inside, it’s valid only if preceded by whitespace.
-#  将合法 "-" 的位置存入全局数组 hypos[] 并返回数量。
+# 将合法 "-" 的位置存入全局数组 hypos[] 并返回数量。
 function find_hyphens_positions(s,    i,ch,count) {
     delete hypos
     count = 0
@@ -143,16 +146,16 @@ function find_hyphens_positions(s,    i,ch,count) {
     return count
 }
 
-############################
+#############################
 #   Long-line Splitting / 长句拆分
-############################
+#############################
 
 # Try splitting a long line into two parts using priority rules:
 #   1) space
 #   2) ？ or ！
 #   3) 、 
 #   4) ， or 。
-#   5) fallback: midpoint
+#   5) fallback: midpoint (improved: prefer uneven split for even length)
 #
 # Conditions:
 #   - Avoid producing one very short side (<=2 chars).
@@ -166,7 +169,7 @@ function find_hyphens_positions(s,    i,ch,count) {
 #
 # 尝试按优先级拆分长行，遵循约束条件。
 # 成功时在 SL_L/SL_R 返回结果并返回 1，失败返回 0。
-function split_line(line,    tmp,len,mid,i,ch,ll,rr,diff,bestPos,bestDiff,left,right,prefix,pch) {
+function split_line(line,    tmp,len,mid,i,ch,ll,rr,diff,bestPos,bestDiff,left,right,prefix,pch,pos) {
     tmp = line
     sub(/^\{\\an[0-9]+\}/, "", tmp)   # ignore {\anX} at start for length calc / 忽略开头的对齐标签
     len = clen(tmp)
@@ -226,11 +229,17 @@ function split_line(line,    tmp,len,mid,i,ch,ll,rr,diff,bestPos,bestDiff,left,r
         }
     }
 
-    # Fallback: midpoint / 兜底策略：中点切分
+    # Fallback: midpoint / 兜底策略：中点切分（改进：偶数长度时优先不对称拆分）
     if (bestPos == 0) {
-        ll = mid; rr = len - mid
+        if (len % 2 == 0) {
+            pos = mid - 1
+            if (pos < 1) pos = mid
+        } else {
+            pos = mid
+        }
+        ll = pos; rr = len - pos
         if ((ll <= 2 && rr - ll >= 5) || (rr <= 2 && ll - rr >= 5)) return 0
-        bestPos = mid
+        bestPos = pos
     }
 
     SL_L = trim(substr(line,1,bestPos))
@@ -259,12 +268,13 @@ function split_line(line,    tmp,len,mid,i,ch,ll,rr,diff,bestPos,bestDiff,left,r
         SL_L = trim(SL_L prefix)
         SL_R = trim(SL_R)
     }
+
     return 1
 }
 
-############################
+#############################
 #   Main Processing / 主流程
-############################
+#############################
 
 {
     # Detect CRLF endings and strip \r
@@ -287,7 +297,6 @@ $0 ~ /^[0-9]+$/ {
     if ((getline cueTimecode) > 0) {
         if (cueTimecode ~ /\r$/) useCRLF = 1
         sub(/\r$/, "", cueTimecode)
-
         if (is_timecode(cueTimecode)) {
             # Confirmed valid cue
             # 确认是有效字幕块
