@@ -1,6 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_en_swap.awk
+# Version: 1.0
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p)
 # License: MIT License

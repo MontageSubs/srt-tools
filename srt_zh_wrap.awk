@@ -1,6 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_wrap.awk
+# Version: 1.0
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p)
 # License: MIT License
@@ -43,7 +44,7 @@
 #   Configuration / 配置
 ############################
 BEGIN {
-    SPLIT_THRESHOLD = 15    # default threshold / 默认换行阈值
+    SPLIT_THRESHOLD = 20    # default threshold / 默认换行阈值
     useCRLF = 0            # 0 = LF, 1 = CRLF / 0 表示 LF，1 表示 CRLF
     validSRT = 0           # becomes 1 if valid cue detected / 检测到有效字幕块时为 1
     firstLine = 1          # flag for first line (to remove BOM) / 第一行标记（用于 BOM 去除）
@@ -126,7 +127,7 @@ function is_punct_char(c) {
 # Rules:
 #   - If '-' is at position 1, always valid.
 #   - If '-' appears inside, it’s valid only if preceded by whitespace.
-# 将合法 "-" 的位置存入全局数组 hypos[] 并返回数量。
+#  将合法 "-" 的位置存入全局数组 hypos[] 并返回数量。
 function find_hyphens_positions(s,    i,ch,count) {
     delete hypos
     count = 0
@@ -392,7 +393,7 @@ $0 ~ /^[0-9]+$/ {
 
 END {
     if (!validSRT) {
-        print "Error: not SRT" > "/dev/stderr"
+        print "Error: input is not a valid SRT file" > "/dev/stderr"
         exit 1
     }
 }
