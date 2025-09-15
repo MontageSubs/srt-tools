@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_only.awk
-# Version: 1.0
+# Version: 1.1
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p)
 # License: MIT License
@@ -53,11 +53,10 @@
 #     00:01:20,000 --> 00:01:23,000
 #     看来我错了
 # ============================================================================
-
-###############################
+################################
 #   Utility Functions
 #   工具函数
-###############################
+################################
 
 # Detect whether a line is a valid SRT timecode.
 # Format is relaxed: allows multiple spaces and trailing spaces.
@@ -124,10 +123,10 @@ function output_line(text) {
     }
 }
 
-###############################
+################################
 #   Main Processing Logic
 #   主处理逻辑
-###############################
+################################
 
 BEGIN {
     useCRLF = 0          # default line ending mode / 默认换行符模式
@@ -186,11 +185,57 @@ $0 ~ /^[0-9]+$/ {
             newCueIndex++
             output_line(newCueIndex)
             output_line(cueTimecode)
+
+            # ---------------------------------------------
+            # Preserve alignment tags {\anX}
+            # 保留对齐标签 {\anX}
+            #
+            # If a non-Chinese line contains {\anX}, store it temporarily.
+            # When the next Chinese line appears, prepend the tag to it.
+            # 如果非中文行中包含 {\anX}，暂存下来。
+            # 当下一条中文行出现时，把该标签拼接在中文行前。
+            #
+            # If the Chinese line itself already has {\anX}, use it directly.
+            # 如果中文行本身已有 {\anX}，直接输出，不重复拼接。
+            # ---------------------------------------------
+            alignTag = ""
             for (i = 1; i <= cueLineCount; i++) {
-                if (is_chinese_line(cueLines[i])) {
-                    output_line(cueLines[i])
+                line = cueLines[i]
+
+                # Extract inline alignment tag, e.g. {\an7}
+                # 提取行内的对齐标签，例如 {\an7}
+                tag = ""
+                if (match(line, /\{\\?an[0-9]+\}/)) {
+                    tag = substr(line, RSTART, RLENGTH)
+                }
+
+                if (is_chinese_line(line)) {
+                    if (match(line, /\{\\?an[0-9]+\}/)) {
+                        # Chinese line already has tag → output directly
+                        # 中文行本身已有对齐标签 → 直接输出
+                        output_line(line)
+                        alignTag = ""
+                    } else if (alignTag != "") {
+                        # Use stored tag → prepend to Chinese line
+                        # 使用缓存的对齐标签 → 拼接到中文行前
+                        output_line(alignTag line)
+                        alignTag = ""
+                    } else {
+                        # No tag involved → output as is
+                        # 没有涉及对齐标签 → 原样输出
+                        output_line(line)
+                    }
+                } else {
+                    # Non-Chinese line with tag → store it
+                    # 非中文行有对齐标签 → 暂存
+                    if (tag != "") {
+                        alignTag = tag
+                    }
+                    # Otherwise skip English or style-only lines
+                    # 否则跳过英文或仅样式行
                 }
             }
+
             output_line("")
             next
         } else {
