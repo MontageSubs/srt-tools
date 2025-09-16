@@ -16,7 +16,7 @@ Swap Chinese and English lines in bilingual subtitles.
 
 Usage:
 ````bash
-awk -f srt_zh_en_swap.awk input.srt > output.srt
+$ awk -f srt_zh_en_swap.awk input.srt > output.srt
 ````
 
 ### [`srt_zh_only.awk`](scripts/awk/srt_zh_only.awk)
@@ -27,7 +27,7 @@ Remove English lines and keep only Chinese subtitles.
 
 Usage:
 ````bash
-awk -f srt_zh_only.awk input.srt > output.srt
+$ awk -f srt_zh_only.awk input.srt > output.srt
 ````
 
 ### [`srt_zh_wrap.awk`](scripts/awk/srt_zh_wrap.awk)
@@ -40,13 +40,13 @@ Split long Chinese subtitle lines into two lines for better readability.
 
 Usage:
 ````bash
-awk -v SPLIT_THRESHOLD=20 -v BRACKET_FACTOR=2 -f srt_zh_wrap.awk input.srt > output.srt
+$ awk -v SPLIT_THRESHOLD=15 -v BRACKET_FACTOR=1 -f srt_zh_wrap.awk input.srt > output.srt
 ````
 
 
 ## License
 - Source code and documentation: [MIT License](./LICENSE).
-- Subtitle example files (if included): [CC BY-NC-SA 4.0](./examples/LICENSE).
+- Subtitle example files: [CC BY-NC-SA 4.0](./examples/LICENSE).
 
 
 ---
