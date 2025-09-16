@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_wrap.awk
-# Version: 1.4
+# Version: 1.5
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p), novaeye
 # License: MIT License
@@ -182,7 +182,7 @@ function is_punct_char(c) {
 #   dangling at the end of the left-side after a split (e.g. "(" or "《").
 #   判断字符是否为开括号/左引号，左边不应以此类字符结尾以免产生孤立的开符号。
 function is_open_char(c) {
-    return (index("([{（【《「『〈“‘'\"", c) > 0)
+    return (index("([{（【《「『〈“‘, c) > 0)
 }
 
 ###############################   Hyphen Detection / "-" 标记检测###############################
