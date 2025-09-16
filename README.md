@@ -40,7 +40,7 @@ srt-tools/
 
 #### 用法
 ```bash
-awk -f scripts/awk/srt_zh_en_swap.awk input.srt > output.srt
+$ awk -f srt_zh_en_swap.awk input.srt > output.srt
 ```
 
 
@@ -54,7 +54,7 @@ awk -f scripts/awk/srt_zh_en_swap.awk input.srt > output.srt
 
 #### 用法
 ```bash
-awk -f scripts/awk/srt_zh_only.awk input.srt > output.srt
+$ awk -f srt_zh_only.awk input.srt > output.srt
 ```
 
 
@@ -79,19 +79,19 @@ awk -f scripts/awk/srt_zh_only.awk input.srt > output.srt
 #### 用法示例
 ```bash
 # 使用默认参数（SPLIT_THRESHOLD=20, BRACKET_FACTOR=2）
-awk -f scripts/awk/srt_zh_wrap.awk input.srt > output.srt
+$ awk -f srt_zh_wrap.awk input.srt > output.srt
 
 # 将换行阈值设为 15
-awk -v SPLIT_THRESHOLD=15 -f scripts/awk/srt_zh_wrap.awk input.srt > output.srt
+$ awk -v SPLIT_THRESHOLD=15 -f srt_zh_wrap.awk input.srt > output.srt
 
 # 自定义阈值与括号因子
-awk -v SPLIT_THRESHOLD=15 -v BRACKET_FACTOR=1 -f scripts/awk/srt_zh_wrap.awk input.srt > output.srt
+$ awk -v SPLIT_THRESHOLD=15 -v BRACKET_FACTOR=1 -f srt_zh_wrap.awk input.srt > output.srt
 ```
 
 
 ## 示例
 
-本仓库提供了 [`examples/`](./examples/) 目录，可直接查看示例输出结果。
+本仓库提供了 [`examples`](./examples/) 目录，可直接查看示例输出结果。
 
 
 
@@ -99,9 +99,9 @@ awk -v SPLIT_THRESHOLD=15 -v BRACKET_FACTOR=1 -f scripts/awk/srt_zh_wrap.awk inp
 
 本仓库的源代码与文档（除另有说明部分外）遵循 [MIT License](./LICENSE) 授权，由 **蒙太奇字幕组 (MontageSubs)** 维护。
 
-位于 `examples/` 目录下的示例文件及子目录不适用 MIT 许可，另行采用 [CC BY-NC-SA 4.0](./examples/LICENSE) 协议发布。
+位于 `examples` 目录下的示例文件及子目录不适用 MIT 许可，另行采用 [CC BY-NC-SA 4.0](./examples/LICENSE) 协议发布。
 
-除 `examples/` 目录另行声明的部分外，其余文件一律适用 MIT 许可协议。
+除 `examples` 目录另行声明的部分外，其余文件一律适用 MIT 许可协议。
 
 
 ---
