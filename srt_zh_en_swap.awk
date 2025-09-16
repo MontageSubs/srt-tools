@@ -93,7 +93,7 @@ function has_nonascii(line,    i,ch) {
 # Detect common CJK punctuation.
 # 检测常见的中日韩标点。
 function has_cjk_punct(line) {
-    return (line ~ /[（），。！？：；《》「」『』“”]/)
+    return (line ~ /[（），。！？：；《》「」『』“”【】、]/)
 }
 
 # Detect whether line consists only of style tags, punctuation, or music notes.
