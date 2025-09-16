@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_wrap.awk
-# Version: 1.5
+# Version: 1.5.1
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p), novaeye
 # License: MIT License
@@ -79,7 +79,7 @@
 #                     括号内长度容忍倍数，默认为 2，可用 -v 覆盖。
 # ============================================================================
 
-###############################   Configuration / 配置##############################
+###############################  Configuration / 配置  ##############################
 BEGIN {
     # Initialize runtime options and defaults.
     # 初始化运行时选项与默认值：可通过 awk -v 覆盖 SPLIT_THRESHOLD 和 BRACKET_FACTOR。
@@ -90,7 +90,7 @@ BEGIN {
     firstLine = 1          # flag for first line (used to strip BOM) / 第一行标记用于去 BOM
 }
 
-###############################   Utility Functions / 工具函数###############################
+###############################  Utility Functions / 工具函数  ###############################
 # is_timecode(line)
 #   Return 1 if the given line matches a relaxed SRT timecode pattern
 #   ("hh:mm:ss,ms --> hh:mm:ss,ms"). Accepts flexible spacing around -->.
@@ -185,7 +185,7 @@ function is_open_char(c) {
     return (index("([{（【《「『〈“‘, c) > 0)
 }
 
-###############################   Hyphen Detection / "-" 标记检测###############################
+###############################  Hyphen Detection / "-" 标记检测  ###############################
 # find_hyphens_positions(s)
 #   Collect positions of hyphens that look like dialogue markers:
 #   - a hyphen at position 1 is always considered a dialogue marker;
@@ -209,7 +209,7 @@ function find_hyphens_positions(s,    i,ch,count) {
     return count
 }
 
-###############################  Bracket/Quote Ranges Detection / 括号/引号配对检测 ###############################
+###############################  Bracket/Quote Ranges Detection / 括号/引号配对检测  ###############################
 # find_bracket_ranges(s)
 #   Scan the string and attempt to pair common opening and closing
 #   bracket/quote characters. For each matched pair we record the left and
@@ -316,7 +316,7 @@ function find_index_for_left_np(tmp, target,    i,ch,cum) {
     return 0
 }
 
-###############################   Long-line Splitting / 长句拆分（主逻辑）###############################
+###############################  Long-line Splitting / 长句拆分（主逻辑） ###############################
 # split_line(line)
 #   Attempt to split a long single-line subtitle into two natural parts.
 #   Uses the configured SPLIT_THRESHOLD and BRACKET_FACTOR to make
@@ -544,7 +544,7 @@ function split_line(line,    tmp,orig_len,i,ch,np_len,cum_np,mid,bestPos,bestDif
     return 1
 }
 
-###############################   Main Processing / 主流程##############################
+###############################  Main Processing / 主流程  ##############################
 {
     # Detect CRLF endings and strip \r
     # If the input line ends with CR (\r) we record that the original file
