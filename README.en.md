@@ -43,6 +43,11 @@ Usage:
 $ awk -v SPLIT_THRESHOLD=15 -v BRACKET_FACTOR=1 -f srt_zh_wrap.awk input.srt > output.srt
 ````
 
+## Community
+Join our discussion groups to talk about subtitles, movies, give feedback, or contribute:
+- **Telegram**: [MontageSubs](https://t.me/+HCWwtDjbTBNlM2M5)
+- **IRC**: [#MontageSubs](https://web.libera.chat/#MontageSubs) (synced with Telegram)
+
 
 ## License
 - Source code and documentation: [MIT License](./LICENSE).
