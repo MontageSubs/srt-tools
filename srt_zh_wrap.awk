@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_wrap.awk
-# Version: 1.5.1
+# Version: 1.6
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p), novaeye
 # License: MIT License
@@ -182,7 +182,7 @@ function is_punct_char(c) {
 #   dangling at the end of the left-side after a split (e.g. "(" or "《").
 #   判断字符是否为开括号/左引号，左边不应以此类字符结尾以免产生孤立的开符号。
 function is_open_char(c) {
-    return (index("([{（【《「『〈“‘, c) > 0)
+    return (index("([{（【《「『〈“‘", c) > 0)
 }
 
 ###############################  Hyphen Detection / "-" 标记检测  ###############################
@@ -367,10 +367,11 @@ function find_index_for_left_np(tmp, target,    i,ch,cum) {
 function split_line(line,    tmp,orig_len,i,ch,np_len,cum_np,mid,bestPos,bestDiff,ll,rr,diff,brk,brnp,left_trim,lastc,pos_index,target,pos,absdiff,bal_abs,bal_rel) {
     tmp = line
     sub(/^\{\\an[0-9]+\}/, "", tmp)
-    # ignore {\anX} at start for length calc — 对齐标签不计入长度（不参与阈值判断）
+    # ignore {\anX} at start for length calc / 对齐标签不计入长度（不参与阈值判断）
     orig_len = length(tmp)
 
     # build cumulative non-punct counts per index
+    # 为每个索引构建累计的非标点字符计数
     np_len = 0
     for (i = 1; i <= orig_len; i++) {
         ch = substr(tmp,i,1)
