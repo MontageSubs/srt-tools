@@ -2,7 +2,7 @@
 
 **中文 | [English](./README.en.md)**
 
-`srt-tools` 是由 蒙太奇字幕组 (MontageSubs) 开发的 SRT 字幕处理工具集合。
+SRT Tools 是由 蒙太奇字幕组 (MontageSubs) 开发的 SRT 字幕处理工具集合。
 
 本仓库提供独立脚本，用于常见的字幕处理任务（中英行颠倒、提取纯中文字幕、中文字幕智能换行）。
 
