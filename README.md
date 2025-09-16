@@ -95,6 +95,15 @@ $ awk -v SPLIT_THRESHOLD=15 -v BRACKET_FACTOR=1 -f srt_zh_wrap.awk input.srt > o
 
 
 
+## 社群
+
+欢迎加入我们的交流群，交流字幕处理问题、电影相关话题，反馈本项目意见，或参与字幕制作：
+
+- **Telegram**：[蒙太奇字幕组电报群](https://t.me/+HCWwtDjbTBNlM2M5)
+- **IRC**：[#MontageSubs](https://web.libera.chat/#MontageSubs) （与 Telegram 互联）
+
+
+
 ## 许可协议
 
 本仓库的源代码与文档（除另有说明部分外）遵循 [MIT License](./LICENSE) 授权，由 **蒙太奇字幕组 (MontageSubs)** 维护。
@@ -102,15 +111,6 @@ $ awk -v SPLIT_THRESHOLD=15 -v BRACKET_FACTOR=1 -f srt_zh_wrap.awk input.srt > o
 位于 `examples` 目录下的示例文件及子目录不适用 MIT 许可，另行采用 [CC BY-NC-SA 4.0](./examples/LICENSE) 协议发布。
 
 除 `examples` 目录另行声明的部分外，其余文件一律适用 MIT 许可协议。
-
-
-
-## 社群
-
-欢迎加入我们的交流群，交流字幕处理问题、电影相关话题，反馈本项目意见，或参与字幕制作：
-
-- **Telegram**：[蒙太奇字幕组电报群](https://t.me/+HCWwtDjbTBNlM2M5)
-- **IRC**：[#MontageSubs](https://web.libera.chat/#MontageSubs) （与 Telegram 互联）
 
 
 ---
