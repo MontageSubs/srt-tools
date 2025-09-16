@@ -1,9 +1,9 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_only.awk
-# Version: 1.1
+# Version: 1.2
 # Organization: MontageSubs (蒙太奇字幕组)
-# Contributors: Meow P (小p)
+# Contributors: Meow P (小p), novaeye
 # License: MIT License
 # Source: https://github.com/MontageSubs/
 #
