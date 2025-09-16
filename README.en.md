@@ -1,6 +1,6 @@
 # SRT Tools
 
-**[中文说明](./README.md) | English**
+**[中文](./README.md) | English**
 
 SRT Tools is a set of utilities for processing SubRip (.srt) subtitle files.
 
