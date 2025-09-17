@@ -58,8 +58,7 @@ Join our discussion groups to talk about subtitles, movies, give feedback, or co
 
 <div align="center">
 
-**MontageSubs (蒙太奇字幕组)**
-
-"Powered by love ❤️ 用爱发电"
+**MontageSubs (蒙太奇字幕组)**  
+“Powered by love ❤️ 用爱发电”
 
 </div>
