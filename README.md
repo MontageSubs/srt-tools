@@ -127,8 +127,7 @@ $ awk -v SPLIT_THRESHOLD=15 -v BRACKET_FACTOR=1 -f srt_zh_wrap.awk input.srt > o
 
 <div align="center">
 
-**蒙太奇字幕组 (MontageSubs)**
-
+**蒙太奇字幕组 (MontageSubs)**  
 “用爱发电 ❤️ Powered by love”
 
 </div>
