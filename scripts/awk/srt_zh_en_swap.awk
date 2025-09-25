@@ -1,11 +1,11 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_en_swap.awk
-# Version: 1.1
+# Version: 1.2
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p), novaeye
 # License: MIT License
-# Source: https://github.com/MontageSubs/
+# Source: https://github.com/MontageSubs/srt-tools/
 #
 # Description / 描述:
 #   This AWK script processes SubRip (.srt) subtitle files and swaps
@@ -69,15 +69,20 @@ function is_timecode(line) {
     return (line ~ /^[ \t]*[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}[ \t]*-->[ \t]*[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}[ \t]*$/)
 }
 
-# Check if a line is ASCII-only (potential English).
-# 检查一行是否为纯 ASCII（可能是英文）。
-function is_ascii(line,    i,ch) {
-    if (line == "") return 0
-    for (i = 1; i <= length(line); i++) {
-        ch = substr(line,i,1)
-        if (!(ch >= " " && ch <= "~")) return 0
+# Determine whether a line should be treated as "English"
+# 判断一行是否应被视为“英文”
+# Returns 1 if the line contains no Chinese characters, ignoring style tags, punctuation, and music symbols
+# 如果行中不包含汉字，去掉样式标签、标点和音乐符号后视为英文，则返回 1，否则返回 0
+function is_english_line(line, tmp, i, ch) {
+    tmp = line
+    gsub(/[♪♫♩♬]/, "", tmp)                # remove music symbols / 移除音乐符号
+    gsub(/< *\/? *[ibuIBU] *>/, "", tmp)   # remove <i>, <b>, <u> tags / 移除样式标签
+    gsub(/[[:punct:][:space:]]/, "", tmp)  # remove punctuation and spaces / 移除标点和空格
+    for (i = 1; i <= length(tmp); i++) {
+        ch = substr(tmp, i, 1)
+        if (ch ~ /[一-龥]/) return 0        # contains Chinese → not English / 含汉字 → 不是英文
     }
-    return 1
+    return 1                               # otherwise → English / 否则视为英文
 }
 
 # Detect any non-ASCII character (likely CJK).
@@ -96,6 +101,12 @@ function has_cjk_punct(line) {
     return (line ~ /[（），。！？：；《》「」『』“”【】、]/)
 }
 
+# Detect CJK Unified Ideographs (U+4E00–U+9FFF)
+# 检测是否包含 CJK 统一表意文字（常用汉字区间）
+function has_cjk_char(line) {
+    return (line ~ /[一-龥]/)
+}
+
 # Detect whether line consists only of style tags, punctuation, or music notes.
 # 检测一行是否仅包含样式标签、标点或音乐符号。
 function is_style_or_music_only(line,    tmp) {
@@ -103,17 +114,18 @@ function is_style_or_music_only(line,    tmp) {
     gsub(/< *\/? *[ibuIBU] *>/, "", tmp)      # remove <i>, <b>, <u> / 移除样式标签
     gsub(/\\?{[^}]*}/, "", tmp)               # remove {\anX} or similar / 移除 {\anX} 等
     gsub(/[[:punct:][:space:]]/, "", tmp)     # remove punctuation/spaces / 移除标点和空格
-    gsub(/[♪♫♩♬]/, "", tmp)                  # remove music symbols / 移除音乐符号
+    gsub(/[♪♫♩♬]/, "", tmp)                   # remove music symbols / 移除音乐符号
     return (tmp == "")
 }
 
-# Determine whether a line should be treated as "Chinese".
-# 判断一行是否应被视为“中文”。
+# Determine whether a line should be treated as "Chinese"
+# 判断一行是否应被视为“中文”
+# Returns 1 if the line contains at least one CJK character or CJK punctuation, otherwise 0
+# 如果行中包含至少一个 CJK 字符或 CJK 标点，则返回 1，否则返回 0
 function is_chinese_line(line) {
-    if (!has_nonascii(line)) return 0
-    if (has_cjk_punct(line)) return 1
-    if (is_style_or_music_only(line)) return 0
-    return 1
+    if (has_cjk_char(line)) return 1   # Real CJK characters / 真正的汉字
+    if (has_cjk_punct(line)) return 1  # CJK punctuation / CJK 标点
+    return 0                           # Otherwise not Chinese / 否则视为英文
 }
 
 # Extract {\anX} tag from beginning of line.
@@ -236,7 +248,7 @@ $0 ~ /^[0-9]+$/ {
 
             # Swap if first line is Chinese and second is English
             # 如果第一行是中文，第二行是英文 → 交换
-            if (is_chinese_line(firstText) && is_ascii(secondText)) {
+            if (is_chinese_line(firstText) && is_english_line(secondText)) {
                 output_line(cueTag secondText)
                 output_line(firstText)
             } else {
