@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_en_swap.awk
-# Version: 1.2
+# Version: 1.2.1
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p), novaeye
 # License: MIT License
@@ -70,8 +70,8 @@ function is_timecode(line) {
 }
 
 # Determine whether a line should be treated as "English"
-# 判断一行是否应被视为“英文”
 # Returns 1 if the line contains no Chinese characters, ignoring style tags, punctuation, and music symbols
+# 判断一行是否应被视为“英文”
 # 如果行中不包含汉字，去掉样式标签、标点和音乐符号后视为英文，则返回 1，否则返回 0
 function is_english_line(line, tmp, i, ch) {
     tmp = line
