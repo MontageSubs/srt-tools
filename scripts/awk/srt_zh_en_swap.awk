@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_en_swap.awk
-# Version: 1.2.1
+# Version: 1.2.2
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p), novaeye
 # License: MIT License
@@ -119,8 +119,8 @@ function is_style_or_music_only(line,    tmp) {
 }
 
 # Determine whether a line should be treated as "Chinese"
-# 判断一行是否应被视为“中文”
 # Returns 1 if the line contains at least one CJK character or CJK punctuation, otherwise 0
+# 判断一行是否应被视为“中文”
 # 如果行中包含至少一个 CJK 字符或 CJK 标点，则返回 1，否则返回 0
 function is_chinese_line(line) {
     if (has_cjk_char(line)) return 1   # Real CJK characters / 真正的汉字
