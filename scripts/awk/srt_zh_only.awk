@@ -1,11 +1,11 @@
 #!/usr/bin/awk -f
 # ============================================================================
 # Name: srt_zh_only.awk
-# Version: 1.2
+# Version: 1.3
 # Organization: MontageSubs (蒙太奇字幕组)
 # Contributors: Meow P (小p), novaeye
 # License: MIT License
-# Source: https://github.com/MontageSubs/
+# Source: https://github.com/MontageSubs/srt-tools/
 #
 # Description / 描述:
 #   This AWK script processes SubRip (.srt) subtitle files and removes
@@ -53,6 +53,7 @@
 #     00:01:20,000 --> 00:01:23,000
 #     看来我错了
 # ============================================================================
+
 ################################
 #   Utility Functions
 #   工具函数
@@ -93,6 +94,12 @@ function has_cjk_punct(line) {
     return (line ~ /[（），。！？：；《》「」『』“”【】、]/)
 }
 
+# Detect CJK Unified Ideographs (U+4E00–U+9FFF)
+# 检测是否包含 CJK 统一表意文字（常用汉字区间）
+function has_cjk_char(line) {
+    return (line ~ /[一-龥]/)
+}
+
 # Detect whether a line consists only of style tags, punctuation, or music notes.
 # 检测一行是否仅包含样式标签、标点或音乐符号。
 function is_style_or_music_only(line,    tmp) {
@@ -100,17 +107,18 @@ function is_style_or_music_only(line,    tmp) {
     gsub(/< *\/? *[ibuIBU] *>/, "", tmp)      # remove <i>, <b>, <u> / 移除样式标签
     gsub(/\\?{[^}]*}/, "", tmp)               # remove {\anX} / 移除对齐标签
     gsub(/[[:punct:][:space:]]/, "", tmp)     # remove punctuation/spaces / 移除标点与空格
-    gsub(/[♪♫♩♬]/, "", tmp)                  # remove music symbols / 移除音乐符号
+    gsub(/[♪♫♩♬]/, "", tmp)                   # remove music symbols / 移除音乐符号
     return (tmp == "")
 }
 
-# Determine whether a line should be treated as "Chinese".
-# 判断一行是否应被视为“中文”。
+# Determine whether a line should be treated as "Chinese"
+# 判断一行是否应被视为“中文”
+# Returns 1 if the line contains at least one CJK character or CJK punctuation, otherwise 0
+# 如果行中包含至少一个 CJK 字符或 CJK 标点，则返回 1，否则返回 0
 function is_chinese_line(line) {
-    if (!has_nonascii(line)) return 0
-    if (has_cjk_punct(line)) return 1
-    if (is_style_or_music_only(line)) return 0
-    return 1
+    if (has_cjk_char(line)) return 1   # Real CJK characters / 真正的汉字
+    if (has_cjk_punct(line)) return 1  # CJK punctuation / CJK 标点
+    return 0                           # Otherwise not Chinese / 否则视为英文
 }
 
 # Output a line with preserved line endings (LF or CRLF).
@@ -196,7 +204,7 @@ $0 ~ /^[0-9]+$/ {
             # 当下一条中文行出现时，把该标签拼接在中文行前。
             #
             # If the Chinese line itself already has {\anX}, use it directly.
-            # 如果中文行本身已有 {\anX}，直接输出，不重复拼接。
+            # 如果中文行本身已有对齐标签，直接输出，不重复拼接。
             # ---------------------------------------------
             alignTag = ""
             for (i = 1; i <= cueLineCount; i++) {
